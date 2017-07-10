@@ -170,4 +170,264 @@ console.log(rightNow);
  -> var rightNow = +new Date();
     var endTime = +new Date();
     var elapsedTime = endTime - rightNow;
-    
+    console.log(elapsedTime) -> outputs time elapsed in miliseconds
+    between endTime and rightNow;
+
+Creating speed test class.
+
+function SpeedTest(testImplement, testParams,repetitions = 10000)
+{
+  this.testIMplement = testImplement;
+  this.testParams = testParams;
+  this.repetitions = repetitions;
+  this.average = 0;
+}
+
+SpeedTest.prototype = {
+  startTest: function()
+  {
+    let beginTime, endTime, sumTimes = 0;
+    for(let i =0, x = this.repetitions: i < x; i++)
+    {
+      beginTime = +new Date();
+      this.testImplement(this.testParams);
+      endTime = +new Date();
+      sumTimes += endTime - beginTime;
+    }
+    this.average = sumTimes/repetitions;
+    return console.log(`Average execution across ${this.repetitions}:
+                        ${this.average}`)
+  }
+}
+
+Careful Comparison
+
+Comparison operators try/catch
+
+=== compares type and contents.
+
+'4' == 4; -> true (type coecion)
+'4' === 4; -> false (no type coercion);
+true == 1  -> true;
+false == 0 -> true;
+true === 1 -> false;
+false === 0 -> false;
+
+"\n \n \t" == 0 -> true; (slightly weird);
+
+=== comparison should be used when data can have multiple/unknown types.
+
+Verifying class of object.
+Check if class has specific constructor/prototype.
+
+instanceof operator used to check class/prototype/constructor.
+Used as obj instanceof Constructor . Returns true for any Constructor in
+prototype chain of obj.
+
+Exception handling
+
+Exception = run-time error != syntax error.
+Javascript has method for identifying/recovering from run-time errors:
+
+try {
+  alert(alarm);
+}
+catch(error)
+{
+  alert(`U oh...\n ${error}`);
+}
+
+catch can be made to act different on different errors.
+catch (error)
+{
+  if( error instanceof ReferenceError) {...}
+  if( error instanceof TypeError) {...}
+}
+
+Javascript does not pinpoint every error. Can use conditionals and throw
+statements to make errors more specific.
+
+try {
+  if(list === undefined)
+  {
+    throw new ReferenceError();
+  }
+  if((list instanceof Array) === false)
+  {
+    throw new TypeError();
+  }
+}
+catch( ...)
+{
+  ...
+}
+
+Optionally can add finally block, statements inside finally block always executed
+regardless of wheter try block throws or not.
+Nesting try/catch blocks allowed.
+
+What not to do.
+
+with statement.
+
+Javascript has keyword with, often expensive to use and ureliable -> often
+avoided.
+
+with can be used to create a new lexical scope.
+with(drawBridge)
+{
+  open() -> drawBridge.open();
+  close = function()
+  {
+    ...
+  } -> not added as property of drawBridge object, instead added as global
+  variable.
+}
+
+Goal of with = avoid redundancy (nested object syntax can be shortened
+  with the keyword with ).
+
+  castle.keep.drawBridge.... ->
+  with(castle.keep.drawBridge)
+  {
+
+  }
+
+  better to use variables to cache objects.
+
+  let o = castle.keep.drawBridge
+
+  eval keyword can affect legiblity, ability to debug and performance.
+
+  eval keyword treats string as line of code to evaluate.
+
+  Eval has uses, but those are very limited.
+
+  using eval to to parse JSON data = VERY DANGEROUS.
+  json from external sources can contain malliscious scripts aiming at
+  code injection. Use json.parse() instead of eval.
+
+Curly braces {} can be left off of single-line statements.
+
+if(isKing)
+  weapon = "Excalibur";
+else
+  weapon = "Longsword";
+
+Bad idea, makes it hard to add new lines of code. Be cool, bracket code.
+
+Number nonsense
+
+Decimals in javascript = problems.
+Javascript uses binary floating point values to handle all of its decimal based
+operations.
+console.log(0.1+0.2) -> 0.30000000000000000000000000000000004 ???????????
+console.log(0.1+0.2+0.3) -> 0.6000000000000000000000000000001 ???????????
+console.log((0.1+0.2)+0.3) != console.log(0.1+(0.2+0.3));
+Tools for handling this.
+
+toFixed() sets number of decimal places to display, rounds to last indicated
+position. returns a string.
+parseFloat() string -> floating point number;
+parseInt() string -> integer number;
+parseInt() treats string with initial 0 as octal by default.
+parseInt("021") -> 17.
+Can use optional radix to specify what base string is specified in.
+parseInt("021",10); -> 21 should always be used when execution environment is
+unknown.
+
+Using NaN check to find out if value is number can be very confusing.
+
+typeof NaN -> number;
+console.log(NaN === NaN) -> false; ?????????????
+isNan("42") -> false;
+
+Double check.
+typeof data ==="number" && !isNaN(data);
+
+Data can be parsed before checking.
+
+let x = parseInt(y) then typeof y === "number" && !isNan(y);
+
+Modularity
+
+Namespacing basics
+Conflicting code withing multiple js files can cause overwrites.
+Simulated namespaces in JS can limit global impact+ provide data protection.
+Creating namespace starts by creating global object ("wrapper of the space")
+
+var HOFMASTER =
+{
+  list:[ ....],
+  hof: ....,
+  ...
+};
+HOFMASTER acts as container for names. (Have to be accessed as properties of
+HOFMASTER) no risk of names being overriden in global scope.
+Nesting namespaces frequent in module pattern.
+
+var HOFMASTER
+{
+  list: [...],
+  hof: ....,
+  BIOGRAPHIES: {
+    ......
+  }
+}
+
+
+HOFMASTER.BIOGRAPHIES....
+
+Anonymous Closures
+
+Modules can have "privatey" properties.
+
+To do this, first wrap entire set of properties in anonymous immediately invoked
+function expression. Then turn methods to private executable functions. then
+move private values and methods to top of function. Making some properties public,
+add them to object, return object.
+var ARMORY = (function(
+  var weaponList = [... ],
+  var armorList = [...],
+  var removeWeapon = function(){...};
+  var replaceWeapon = function() {...};
+  return
+  {
+  makeWeaponRequest(): function(...) {},
+  makeArmorRequest(): function( ... ) {}}
+){)(); makeWeaponRequest and makeArmorRequest now publicly accessible.
+ARMORY.makeWeaponRequest();
+ARMORY.makeArmorRequest();
+Global imports
+
+Non local variables reference inside module -> search traverses entire scope
+chain, can be very expensive lookup, convoluted namespaces can make scope of
+global variables unclear.
+Use imports for clearer faster globals inside modules. Protects global from beeing
+overwritten.
+This can be done by adding a parameter for each desired global variable in
+functional wrapper syntax, then using value in call.
+(function(x,y,z,...) {
+
+
+}(xval,yval,zval));
+
+Augmentation
+Modules often needs to have additions to existing properties.
+
+Augmentation = process of adding extra properties to existing modules.
+
+E.g.
+ARMORY = existing namespace
+ARMORY = (function( oldNS ){
+var oliBarrels = 1000;
+var catapults = ["Stoneslinger","Rockrain","The Giant's Arm"];
+oldNS.assignCatapult = function(regiment)
+{
+
+}
+return oldNS;
+}(ARMORY)
+
+Augmented properties do not have access to private properties/values in old
+namespace (can only use public interface).
