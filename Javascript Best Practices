@@ -1,0 +1,173 @@
+Ternary conditionals
+
+Standard conditional
+Simple assignment can take lots of code.
+
+I.e.
+
+var isArthur = false;
+var weapon;
+
+if(isArthur)
+{
+  weapon = "Excalibur";
+} else
+{
+  weapon = "Longsword";
+}
+
+Ternary conditional
+
+someCondition ? pickIfTrue: pickIfFalse;
+
+E.g.
+
+var weapon = isArthur ? "Excalibur": "Longsword";
+
+Logic assignment
+
+Logical operators can make code even shorter than ternaries
+
+var armor =
+{ addSword(sword){
+    this
+}}
+
+switch block
+alternate way to take action based on value, not just booleans.
+
+E.g.
+
+function Knight (name, regiment)
+{
+  this.name = name;
+  this.regiment = regiment;
+  if(regiment == 1)
+  {
+    this.weapon = "Broadsword";
+  }
+  else if(regiment == 2)
+  {
+    this.weapon = "Claymore";
+  }
+  else if(regiment == 3)
+  {
+    this.weapon = "Longsword";
+  }
+}
+
+function knights(name, regiment) {
+  this.name = name;
+  this.regiment = regiment;
+  switch (this.regiment) {
+    case 1:
+    this.weapon = "Broadsword";
+    break;
+    case 2:
+    this.weapon = "Claymore";
+    break;
+    case 3:
+    this.weapon = "Longsword";
+    break;
+  }
+}
+
+Loop optimization
+
+treasureChest =
+{
+  goldCoins:10000;
+  magicalItem: "Crown Of Speed";
+  necklaces: ["ruby","pearl","sapphire","diamond"];
+  openLid: function(){
+    alert("Creeeeeck");
+  }
+}
+
+console.log("You've found the following necklaces");
+for(var i=0; i < treasureChest.necklaces.length; i++)
+{
+  console.log(treasureChest.necklaces[i]);
+} //inefficient looping Incurs multiple lookups for each step in loop.
+
+Can use "cached values" to save lookups.
+
+var x = treasureChest.length;
+for(var i =0; i != x; i++)
+{
+  console.log(treasureChest.necklaces[i]);
+}
+Even more change, no more optimization but better organization.
+
+for(var i=0, var x = treasureChest.necklaces.length; i != x; i++)
+{
+  ...
+}
+
+More optimization
+var list = treasureChest.necklaces;
+for(var i=0, var x = treasureChest.necklaces.length; i != x; i++)
+{
+  ...
+}
+
+Choosing the best loops for arrays.
+
+for loops > for-in loops if goal = reach every index.
+
+for-in includes all properties added externally in prototype.
+
+Script execution
+
+Script placement inside html page effects performance.
+
+Normally browser allowed to make 6 parallell requests at once from server.
+script tag halts requests until loading has ended.
+
+Scripts defined in head of page or at start of body tag causes pausing.
+Solution, work-intensive scripts should be moved down to bottom of page.
+Or, use async tag on script to let rest of page load before script runs.
+<script type = "text/javascript" srd="..." async></script>
+
+Short performance tips
+
+Inheritance can help with memory efficiency
+Be carefull of loading objects with code that could easily be held elsewhere
+(prototypes)
+
+Adding new documents to DOM causes document reflow, this can impact user
+performance.
+
+Work around, create document fragment, append to that, then insert entire
+document fragment once.
+
+var fragment = document.createFragment();
+for(var i=0, x = kotw.length; i < x; i++)
+{
+  var element = document.createElement("i");
+  element.appendChild(document.createTextNode(kotw[i]));
+  elist.appendChild(element);
+}
+Create as few variables as possible (use var as few times as possible);
+
+Efficient choises for string concatenation.
+concatenation can work, but there is method that is faster when strings are
+defined inside array. Strings in array faster to concatenate using join method.
+
+How to meassure performance
+
+console.time() can be used to meassure time of execution for code.
+
+Setting up timers take time.
+
+Meassuring performance II
+
+Retrieving and using numerical data
+Generate numerical data can be manipulated, use Date object.
+var rightNow = new Date();
+console.log(rightNow);
+ +rightNow -> output in miliseconds.
+ -> var rightNow = +new Date();
+    var endTime = +new Date();
+    var elapsedTime = endTime - rightNow;
+    
